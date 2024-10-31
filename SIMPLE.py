@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from utility import initialize_fields, apply_boundary_conditions, build_up_b, pressure_poisson, update_velocity
+from utility import initialize_fields, build_up_b, pressure_poisson, update_velocity
+from boundary_functions import apply_boundary_conditions
 
 class PipeFlowSimulation:
-    def __init__(self, Lx=1.0, Ly=1.0, nx=50, ny=50, rho=100.0, nu=10.0, g=10.0, dt=1e-5, nt=500):
+    def __init__(self, Lx=1.0, Ly=1.0, nx=50, ny=50, rho=100.00, nu=.10, g=10.0, dt=1e-5, nt=1000):
         self.Lx, self.Ly = Lx, Ly
         self.nx, self.ny = nx, ny
         self.dx, self.dy = Lx / (nx - 1), Ly / (ny - 1)
@@ -56,7 +57,8 @@ class PipeFlowSimulation:
             
         ani = animation.FuncAnimation(fig, animate, frames=range(0, self.nt, self.nt // 100), repeat=False)
         plt.tight_layout()
-        plt.show()
+        ani.save('pipe_flow_simulation.mp4', writer='ffmpeg', fps=5)
+        plt.close()
 
 
 # Initialize and run the simulation

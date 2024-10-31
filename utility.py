@@ -10,27 +10,6 @@ def initialize_fields(ny, nx):
     b = np.zeros((ny, nx))
     return u, v, p, b
 
-def apply_boundary_conditions(u, v, p):
-    """
-    Apply boundary conditions:
-    - No-slip on top and bottom walls (u = v = 0)
-    - Zero-gradient on left wall
-    - Right wall with specified inlet velocity for rotating flow
-    - Constant pressure at top boundary
-    """
-    u[-1, :] = -0.5  # Bottom wall
-    v[-1, :] = 0
-    u[0, :] = 0.5    # Top wall
-    v[0, :] = 0
-
-    u[:, -1] = 0     # Right wall
-    v[:, -1] = 0.5
-    u[:, 0] = 0      # Left wall
-    v[:, 0] = -0.5
-
-    p[0, :] = 0      # Top boundary pressure
-    return u, v, p
-
 def build_up_b(u, v, dx, dy, dt, rho):
     """
     Compute the RHS for the pressure Poisson equation.
@@ -62,6 +41,7 @@ def pressure_poisson(p, b, dx, dy, max_iterations, rho, g):
         p[:, -1] = p[:, -2]
         p[0, :] = 0
         p[-1, :] = p[-2, :] + rho * g * dy
+
     return p
 
 def update_velocity(u, v, p, dx, dy, dt, rho, nu):
