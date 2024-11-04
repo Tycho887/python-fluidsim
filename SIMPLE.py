@@ -5,7 +5,7 @@ from utility import initialize_fields, build_up_b, pressure_poisson, update_velo
 from boundary_functions import apply_boundary_conditions
 
 class PipeFlowSimulation:
-    def __init__(self, Lx=1.0, Ly=1.0, nx=100, ny=100, rho=10.00, nu=1.0, g=0.0, dt=1e-5, nt=1000):
+    def __init__(self, Lx=1.0, Ly=1.0, nx=100, ny=100, rho=10.00, nu=1.0, g=0.0, dt=1e-5, nt=10000):
         self.Lx, self.Ly = Lx, Ly
         self.nx, self.ny = nx, ny
         self.dx, self.dy = Lx / (nx - 1), Ly / (ny - 1)
@@ -53,7 +53,7 @@ class PipeFlowSimulation:
             
             # Update velocity plot
             vel_magnitude = np.sqrt(self.u**2 + self.v**2)
-            ax_vel.quiver(x, y, self.u, self.v, scale=10)
+            # ax_vel.quiver(x, y, self.u, self.v, scale=10)
             ax_vel.contourf(x, y, vel_magnitude, alpha=0.5)
             ax_vel.set_title(f"Velocity Field (Time step: {i})")
             
@@ -61,9 +61,9 @@ class PipeFlowSimulation:
             ax_pres.contourf(x, y, self.p, alpha=0.5)
             ax_pres.set_title("Pressure Field")
         
-        ani = animation.FuncAnimation(fig, animate, frames=range(0, self.nt, self.nt // 100), repeat=False)
+        ani = animation.FuncAnimation(fig, animate, frames=range(0, self.nt, self.nt // 1000), repeat=False)
         plt.tight_layout()
-        ani.save('pipe_flow_simulation.mp4', writer='ffmpeg', fps=5)
+        ani.save('pipe_flow_simulation.mp4', writer='ffmpeg', fps=20)
         plt.close()
 
 # Initialize and run the animation

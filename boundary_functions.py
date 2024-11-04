@@ -70,7 +70,7 @@ def chaos(u,v):
     u[:, 0] = 0      # Left wall
     v[:, 0] = -0.1
 
-def right_flow(u,v,flowrate=10):
+def right_flow(u,v,flowrate=0.10):
     u[:, -1] = flowrate*np.sin(np.linspace(0, np.pi, u.shape[0]))
     v[:, -1] = 0
 
@@ -102,14 +102,15 @@ def apply_boundary_conditions(u, v, p):
     - Constant pressure on top and bottom boundaries
     - Zero-gradient on left and right boundaries
     """
-    u, v = simple(u, v)
     
     # Set constant pressure at top and bottom boundaries
-    p[0, :] = 1e5      # Top boundary pressure
-    p[-1, :] = 1e5     # Bottom boundary pressure
+    p[0, :] = 0      # Top boundary pressure
+    p[-1, :] = 0     # Bottom boundary pressure
     
     # Apply zero-gradient (Neumann) condition on left and right boundaries
     p[:, 0] = p[:, 1]  # Left boundary
     p[:, -1] = p[:, -2]  # Right boundary
+
+    u,v = right_flow(u,v)
     
     return u, v, p
