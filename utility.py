@@ -36,11 +36,11 @@ def pressure_poisson(p, b, dx, dy, max_iterations, rho, g):
                           (2 * (dx**2 + dy**2)) -
                           dx**2 * dy**2 / (2 * (dx**2 + dy**2)) * b[1:-1, 1:-1])
 
-        # Boundary conditions for pressure
-        p[:, 0] = p[:, 1]
-        p[:, -1] = p[:, -2]
-        p[0, :] = 0
-        p[-1, :] = p[-2, :] + rho * g * dy
+        # # Boundary conditions for pressure
+        # p[:, 0] = p[:, 1]
+        # p[:, -1] = p[:, -2]
+        # p[0, :] = 0
+        # p[-1, :] = p[-2, :] + rho * g * dy
 
     return p
 

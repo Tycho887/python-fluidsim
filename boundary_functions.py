@@ -70,11 +70,11 @@ def chaos(u,v):
     u[:, 0] = 0      # Left wall
     v[:, 0] = -0.1
 
-def right_flow(u,v):
-    u[:, -1] = 0.5*np.sin(np.linspace(0, np.pi, u.shape[0]))
+def right_flow(u,v,flowrate=10):
+    u[:, -1] = flowrate*np.sin(np.linspace(0, np.pi, u.shape[0]))
     v[:, -1] = 0
 
-    u[:, 0] = 0.5*np.sin(np.linspace(0, np.pi, u.shape[0]))
+    u[:, 0] = flowrate*np.sin(np.linspace(0, np.pi, u.shape[0]))
     v[:, 0] = 0
 
     u[0, :] = 0
@@ -90,22 +90,26 @@ def obstacle(u, v):
     """
     Apply obstacle in the middle of the domain.
     """
-    u[10:20, 10:20] = 0
-    v[10:20, 10:20] = 0
+    u[10:20, 10:-10] = 0
+    v[10:20, 10:-10] = 0
     return u, v
 
 
 def apply_boundary_conditions(u, v, p):
     """
     Apply boundary conditions:
-    - No-slip on top and bottom walls (u = v = 0)
-    - Zero-gradient on left wall
-    - Right wall with specified inlet velocity for rotating flow
-    - Constant pressure at top boundary
+    - No-slip on all walls for u and v (static fluid)
+    - Constant pressure on top and bottom boundaries
+    - Zero-gradient on left and right boundaries
     """
-
-    u, v = right_flow(u, v)
-    u, v = obstacle(u, v)
-
-    p[0, :] = 0      # Top boundary pressure
+    u, v = simple(u, v)
+    
+    # Set constant pressure at top and bottom boundaries
+    p[0, :] = 1e5      # Top boundary pressure
+    p[-1, :] = 1e5     # Bottom boundary pressure
+    
+    # Apply zero-gradient (Neumann) condition on left and right boundaries
+    p[:, 0] = p[:, 1]  # Left boundary
+    p[:, -1] = p[:, -2]  # Right boundary
+    
     return u, v, p
